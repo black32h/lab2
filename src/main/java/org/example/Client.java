@@ -7,7 +7,6 @@ public class Client {
     private static final String SERVER_HOST = "localhost";
     private static final int SERVER_PORT = 5000;
 
-
     public static void main(String[] args) {
         String filePath = "C:\\Users\\Админ\\Downloads\\photo_5842558693126813489_y.jpg"; // Шлях до файлу, який треба відправити
 
@@ -37,11 +36,12 @@ public class Client {
                 out.writeUTF(fileName);
                 out.writeInt(fileSize);
 
+                // Перевірка розміру файлу перед відправкою
                 if (fileSize <= 1024) {
                     // Відправка файлу на сервер
                     out.write(fileData);
 
-                    // Отримання підтвердження та збереження файлу
+                    // Отримання підтвердження від сервера
                     String serverResponse = in.readUTF();
                     System.out.println("Відповідь сервера: " + serverResponse);
 
@@ -50,6 +50,7 @@ public class Client {
                         byte[] receivedData = new byte[receivedSize];
                         in.readFully(receivedData);
 
+                        // Збереження файлу, отриманого від сервера
                         try (FileOutputStream fos = new FileOutputStream("received_" + fileName)) {
                             fos.write(receivedData);
                         }
@@ -57,6 +58,7 @@ public class Client {
                         saveTransferStatus(fileName, fileSize, "Успішно скачано та збережено");
                     }
                 } else {
+                    // Якщо файл не задовільняє умовам, зберігаємо статус
                     String serverResponse = in.readUTF();
                     System.out.println("Відповідь сервера: " + serverResponse);
                     saveTransferStatus(fileName, fileSize, "Не задовільняє умовам, файл не скачаний");
